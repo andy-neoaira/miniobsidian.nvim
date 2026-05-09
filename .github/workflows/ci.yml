@@ -36,9 +36,9 @@ jobs:
             ~/.cargo/bin
             ~/.cargo/registry
             ~/.cargo/git
-          key: cargo-${{ runner.os }}-selene-${{ env.SELENE_VERSION }}
+          key: cargo-ubuntu-selene-${{ env.SELENE_VERSION }}
           restore-keys: |
-            cargo-${{ runner.os }}-selene-
+            cargo-ubuntu-selene-
 
       - name: Install Selene
         run: |
@@ -54,11 +54,6 @@ jobs:
 
   smoke:
     runs-on: ubuntu-latest
-    env:
-      XDG_CACHE_HOME: ${{ runner.temp }}/xdg-cache
-      XDG_CONFIG_HOME: ${{ runner.temp }}/xdg-config
-      XDG_DATA_HOME: ${{ runner.temp }}/xdg-data
-      XDG_STATE_HOME: ${{ runner.temp }}/xdg-state
     steps:
       - uses: actions/checkout@v4
 
@@ -70,6 +65,10 @@ jobs:
 
       - name: Headless load
         run: |
+          export XDG_CACHE_HOME="${RUNNER_TEMP}/xdg-cache"
+          export XDG_CONFIG_HOME="${RUNNER_TEMP}/xdg-config"
+          export XDG_DATA_HOME="${RUNNER_TEMP}/xdg-data"
+          export XDG_STATE_HOME="${RUNNER_TEMP}/xdg-state"
           mkdir -p "$XDG_CACHE_HOME" "$XDG_CONFIG_HOME" "$XDG_DATA_HOME" "$XDG_STATE_HOME"
           nvim --version
           nvim --headless -u NONE -i NONE --cmd "set shadafile=NONE" "+set rtp+=." "+lua local p=vim.fn.tempname(); vim.fn.mkdir(p .. '/Vault/.obsidian', 'p'); require('miniobsidian').setup({ vaults_parent = p, default_vault = 'Vault' })" +q
