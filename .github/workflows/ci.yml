@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: StyLua
+        uses: JohnnyMorganz/stylua-action@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          args: --check lua plugin
+
+      - name: Selene
+        uses: Kampfkarren/selene-action@v1
+        with:
+          args: lua plugin
+
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Neovim
+        uses: rhysd/action-setup-vim@v1
+        with:
+          neovim: true
+          version: v0.11.2
+
+      - name: Headless load
+        run: |
+          nvim --version
+          nvim --headless -u NONE -i NONE "+set rtp+=." "+lua local p=vim.fn.tempname(); vim.fn.mkdir(p .. '/Vault/.obsidian', 'p'); require('miniobsidian').setup({ vaults_parent = p, default_vault = 'Vault' })" +q

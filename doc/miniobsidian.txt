@@ -1,0 +1,98 @@
+*miniobsidian.txt*  Lightweight Obsidian workflow for Neovim
+
+==============================================================================
+INTRODUCTION                                                        *miniobsidian*
+
+miniobsidian.nvim is a lightweight, focused Obsidian workflow plugin for Neovim.
+
+It provides:
+  - Multi-vault support (auto-discovery under a parent folder)
+  - Note creation (with YAML frontmatter) and quick switching
+  - Ripgrep-powered full-text search (via snacks.nvim picker)
+  - Wiki link navigation and completion integration (blink.cmp optional)
+  - Checkbox management (toggle/clear, multi-state)
+  - Image pasting on macOS (osascript)
+  - Templates and daily notes
+
+==============================================================================
+REQUIREMENTS                                                   *miniobsidian-requirements*
+
+Required:
+  - Neovim >= 0.11.2
+  - snacks.nvim
+  - ripgrep (rg)
+
+Optional:
+  - blink.cmp (wiki link / checkbox completion)
+  - osascript (macOS only, for image pasting)
+
+Health check:
+  :checkhealth miniobsidian
+
+==============================================================================
+SETUP                                                           *miniobsidian-setup*
+
+Lua:
+>
+  require("miniobsidian").setup({
+    vaults_parent = "~/Documents/Obsidian",
+    default_vault = "MyVault",
+  })
+<
+
+==============================================================================
+COMMANDS                                                     *miniobsidian-commands*
+
+All commands are registered under the "Obsidian" prefix.
+
+:ObsidianNew [title]                                         *:ObsidianNew*
+    Create a new note in notes_subdir. If [title] is omitted, prompts for input.
+
+:ObsidianNewHere                                             *:ObsidianNewHere*
+    Create a new note in the directory under your file explorer cursor.
+    Falls back to notes_subdir if no explorer context is detected.
+
+:ObsidianSwitchVault                                         *:ObsidianSwitchVault*
+    Pick and switch the active vault.
+
+:ObsidianSwitch                                              *:ObsidianSwitch*
+    Quick switch notes inside the active vault (snacks.nvim picker).
+
+:ObsidianSearch [query]                                      *:ObsidianSearch*
+    Full-text search inside the active vault (rg + snacks.nvim picker).
+
+:ObsidianTemplate                                            *:ObsidianTemplate*
+    Pick a template from templates_folder and insert it with variable expansion.
+
+:ObsidianNewTemplate [name]                                  *:ObsidianNewTemplate*
+    Create a new template file under templates_folder. Prompts if omitted.
+
+:ObsidianPasteImg [name]                                     *:ObsidianPasteImg*
+    Paste an image from the macOS clipboard to attachments_folder and insert
+    a relative Markdown image link. Prompts if omitted.
+
+:ObsidianToday                                                *:ObsidianToday*
+    Open (or create) today's daily note under dailies_folder.
+
+:ObsidianSetup                                               *:ObsidianSetup*
+    Initialize with default config (mostly for testing).
+
+==============================================================================
+EVENTS                                                         *miniobsidian-events*
+
+User autocommands:
+
+User MiniObsidianSetup
+    Fired after require("miniobsidian").setup() completes.
+
+User MiniObsidianVaultSwitch
+    Fired after switching vaults.
+    event.data contains { name = "...", path = "..." }.
+
+==============================================================================
+CONFIG                                                         *miniobsidian-config*
+
+See README for the full configuration reference.
+
+==============================================================================
+vim:tw=78:ts=8:ft=help:norl:

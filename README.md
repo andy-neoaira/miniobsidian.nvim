@@ -6,6 +6,7 @@
 
 [![Neovim](https://img.shields.io/badge/Neovim-%3E%3D0.11.2-blueviolet?logo=neovim)](https://neovim.io)
 [![Lua](https://img.shields.io/badge/Made%20with-Lua-blue?logo=lua)](https://lua.org)
+[![CI](https://github.com/andy-neoaira/miniobsidian.nvim/actions/workflows/ci.yml/badge.svg)](https://github.com/andy-neoaira/miniobsidian.nvim/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 [English](README.en.md) · 中文
@@ -94,6 +95,12 @@
 | [blink.cmp](https://github.com/Saghen/blink.cmp) | 自动补全（wiki 链接 + checkbox，**可选**） | lazy.nvim |
 | `ripgrep` | 全文搜索后端 | `brew install ripgrep` |
 | `osascript` | 图片粘贴（macOS 系统内置，仅 macOS 有效） | — |
+
+健康检查：
+
+```vim
+:checkhealth miniobsidian
+```
 
 ---
 
