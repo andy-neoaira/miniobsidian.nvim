@@ -6,7 +6,6 @@
 
 [![Neovim](https://img.shields.io/badge/Neovim-%3E%3D0.11.2-blueviolet?logo=neovim)](https://neovim.io)
 [![Lua](https://img.shields.io/badge/Made%20with-Lua-blue?logo=lua)](https://lua.org)
-[![CI](https://github.com/andy-neoaira/miniobsidian.nvim/actions/workflows/ci.yml/badge.svg)](https://github.com/andy-neoaira/miniobsidian.nvim/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 [English](README.en.md) · 中文
