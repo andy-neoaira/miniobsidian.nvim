@@ -4,6 +4,16 @@ on:
   push:
   pull_request:
 
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  SELENE_VERSION: "0.30.0"
+
 jobs:
   lint:
     runs-on: ubuntu-latest
@@ -16,13 +26,39 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           args: --check lua plugin
 
-      - name: Selene
-        uses: Kampfkarren/selene-action@v1
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache cargo
+        uses: actions/cache@v4
         with:
-          args: lua plugin
+          path: |
+            ~/.cargo/bin
+            ~/.cargo/registry
+            ~/.cargo/git
+          key: cargo-${{ runner.os }}-selene-${{ env.SELENE_VERSION }}
+          restore-keys: |
+            cargo-${{ runner.os }}-selene-
+
+      - name: Install Selene
+        run: |
+          if command -v selene >/dev/null 2>&1; then
+            selene --version
+            exit 0
+          fi
+          cargo install selene --locked --version "${SELENE_VERSION}"
+          selene --version
+
+      - name: Selene
+        run: selene lua plugin
 
   smoke:
     runs-on: ubuntu-latest
+    env:
+      XDG_CACHE_HOME: ${{ runner.temp }}/xdg-cache
+      XDG_CONFIG_HOME: ${{ runner.temp }}/xdg-config
+      XDG_DATA_HOME: ${{ runner.temp }}/xdg-data
+      XDG_STATE_HOME: ${{ runner.temp }}/xdg-state
     steps:
       - uses: actions/checkout@v4
 
@@ -34,5 +70,6 @@ jobs:
 
       - name: Headless load
         run: |
+          mkdir -p "$XDG_CACHE_HOME" "$XDG_CONFIG_HOME" "$XDG_DATA_HOME" "$XDG_STATE_HOME"
           nvim --version
-          nvim --headless -u NONE -i NONE "+set rtp+=." "+lua local p=vim.fn.tempname(); vim.fn.mkdir(p .. '/Vault/.obsidian', 'p'); require('miniobsidian').setup({ vaults_parent = p, default_vault = 'Vault' })" +q
+          nvim --headless -u NONE -i NONE --cmd "set shadafile=NONE" "+set rtp+=." "+lua local p=vim.fn.tempname(); vim.fn.mkdir(p .. '/Vault/.obsidian', 'p'); require('miniobsidian').setup({ vaults_parent = p, default_vault = 'Vault' })" +q
